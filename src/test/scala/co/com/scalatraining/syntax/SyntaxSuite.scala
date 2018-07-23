@@ -1,6 +1,6 @@
 package co.com.scalatraining.syntax
 
-import org.scalatest.FunSuite
+import org.scalatest.{Assertion, FunSuite}
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
 
 class SyntaxSuite extends FunSuite{
@@ -76,8 +76,10 @@ class SyntaxSuite extends FunSuite{
 
     // A una class se le debe instanciar con new pasándole los atributos que define para su construccion
     val mc: MyClass = new MyClass(1)
+    val mc2: MyClass = new MyClass(1)
     val res = mc.f1
     assert(res == 2)
+    assert(mc != mc2)
   }
 
   test("A un class se le puede  mutar su estado"){
@@ -118,7 +120,7 @@ class SyntaxSuite extends FunSuite{
     assert(mcc1.f1(1) == 2)
 
     // Se puede instanciar sin new
-    val mcc2 = MyCaseClass(1,2)
+    val mcc2 = MyCaseClass(2,2)
     println(s"mcc: ${mcc2}")
 
     assert(mcc2.f1(1) == 2)
@@ -162,6 +164,31 @@ class SyntaxSuite extends FunSuite{
     assert(res == 2)
   }
 
+  test("Trait con object"){
+    trait MyTrait {
+      def f1(a:Int) = a + 1
+    }
+
+    object MyClass extends MyTrait
+
+    val mc = MyClass.f1(1)
+    assert(mc == 2)
+  }
+
+  test("dos f1"){
+    trait MyTrait {
+      def f1(a:Int) = a + 1
+    }
+
+    class MyClass extends MyTrait{
+      def f2(a:Int) = a + 1
+    }
+
+    val mc = new MyClass
+    val res = mc.f2(1)
+    assert(res == 2)
+  }
+
 
   test("Pattern matching"){
     case class Profesor(nombre:String)
@@ -169,7 +196,7 @@ class SyntaxSuite extends FunSuite{
 
     val c1 = Curso("Scala", Profesor("JP"))
 
-    c1 match {
+    val res: Assertion = c1 match {
       case x:Curso if x.p.nombre != "JP"=> {
         assert(x.nombre=="Scala")
         assert(x.p==Profesor("JP"))
