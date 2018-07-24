@@ -269,5 +269,22 @@ class ListSuite extends FunSuite {
 
   }
 
+  test("Flatmap --> aplanadora"){
+    val lista: List[List[Int]] = List(List(1, 1), List(2, 2))
+    assertResult(List(1, 2)) {
+      lista.flatMap(x => List(x.sum/x.size))
+    }
+    
+    val lista2: List[List[Int]] = List(List(1, 1), List(2, 2), Nil)
+    assertResult(List(1, 2)) {
+      lista2.filter(x => x != Nil)
+        .flatMap(x => List(x.sum/x.size))
+    }
+
+    val lista3 = List(List(1, 2), List(3, 4))
+    assertResult(List(1, 2, 3, 4)) {
+      lista3.flatMap(x => x)
+    }
+  }
 
 }
