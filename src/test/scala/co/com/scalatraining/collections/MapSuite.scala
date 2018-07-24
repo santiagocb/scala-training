@@ -30,7 +30,7 @@ class MapSuite extends FunSuite {
     }
   }
 
-  test("Un Map se debe poder perar en un for-comp"){
+  test("Un Map se debe poder operar en un for-comp"){
     val mapa = Map(1->"uno", 2->"dos")
 
     val res = for{
@@ -135,17 +135,20 @@ class MapSuite extends FunSuite {
     }
   }
 
-  test("String largo") {
-
+  test("Map with how many words and in a text") {
     var map: Map[String, Int] = Map()
     val texto: String = "hola a todo el mundo hola hola"
+
+    println(texto.split(" ").groupBy(x => x).mapValues(x => x.size))
+    //texto.split(" ").foldLeft(Map[String, Int])())(op = (m,i) => m + (i -> (m.getOrElse(i,0)+1)))  ORGANIZAR !!
 
     val r: Array[String] = texto.split(" ")
     val sin: Array[String] = r.distinct
 
+    println(sin.map(x => x -> r.count(ele => ele == x)).toMap)
+
     sin.foreach(x =>
-      map =d 
-        map + (x -> r.count(ele => ele == x))
+      map = map + (x -> r.count(ele => ele == x))
     )
 
     println(map)
