@@ -152,4 +152,20 @@ class SetSuite extends FunSuite {
     assert(r.tail.tail.tail.head == 3)
   }
 
+  test("Union, Intersección y Diferencia entre conjuntos"){
+    val set1: Set[Int] = Set(1, 2, 3, 4)
+    val set2: Set[Int] = Set(1, 2, 5)
+
+    val union: Set[Int] = set1.foldLeft(set2)((x, item) => x + item)
+    val intersection: Set[Int] = set1.filter(x => set2(x))
+    val differ: Set[Int] = set1.filter(x => !set2(x))
+
+    println("union= " + union)
+    println(intersection)
+    println(differ)
+    assert(union == set1 ++ set2)
+    assert(intersection == (set1 & set2))
+    assert(differ == (set1 &~ set2))
+  }
+
 }
