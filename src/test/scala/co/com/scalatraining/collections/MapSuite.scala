@@ -15,17 +15,22 @@ class MapSuite extends FunSuite {
   }
 
   test("foreach en un Map") {
-    val map = Map("1" -> 1, "2" -> 2, "3" -> 3)
+    val map: Map[String, Int] = Map("1" -> 1, "2" -> 2, "3" -> 3)   //key: String, value: Int
     assertResult(6) {
       var sum = 0
       map.foreach((x) =>
         sum += x._2
       )
+      sum = 0
+      map.foreach{
+        case(k, v) =>
+          sum += v
+      }
       sum
     }
   }
 
-  test("Un Map se debe poder operar en un for-comp"){
+  test("Un Map se debe poder perar en un for-comp"){
     val mapa = Map(1->"uno", 2->"dos")
 
     val res = for{
@@ -128,6 +133,24 @@ class MapSuite extends FunSuite {
     assertResult(Map("1" -> 1, "2" -> 4, "3" -> 9)) {
       map.mapValues(valor => valor * valor)
     }
+  }
+
+  test("String largo") {
+
+    var map: Map[String, Int] = Map()
+    val texto: String = "hola a todo el mundo hola hola"
+
+    val r: Array[String] = texto.split(" ")
+    val sin: Array[String] = r.distinct
+
+    sin.foreach(x =>
+      map =d 
+        map + (x -> r.count(ele => ele == x))
+    )
+
+    println(map)
+
+
   }
 
 }
