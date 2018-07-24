@@ -42,9 +42,14 @@ class historiaLaboral extends FunSuite{
     val cotizacion5 = new Cotizacion("2018/10", "S4N", 20, 1000)
     val cotizacion6 = new Cotizacion("2018/08", "S4N", 30, 2000)
     val cotizacion7 = new Cotizacion("2018/11", "udea", 30, 870)
-    val cotizacion8 = new Cotizacion("2018/11", "S4N", 15, 5000)
+    //val cotizacion8 = new Cotizacion("2018/11", "S4N", 15, 5000)
+    //val cotizacion9 = new Cotizacion("2018/12", "udea", 15, 5000)
 
-    val listaCotizaciones = List(cotizacion1, cotizacion2, cotizacion3, cotizacion4, cotizacion5, cotizacion6, cotizacion7, cotizacion8)
+    val listaCotizaciones = List(cotizacion1, cotizacion2, cotizacion3, cotizacion4, cotizacion5, cotizacion6, cotizacion7)
+    //val listaCotizaciones = List(cotizacion1, cotizacion2, cotizacion3, cotizacion4, cotizacion5, cotizacion6, cotizacion7, cotizacion8)
+    //val listaCotizaciones = List(cotizacion1, cotizacion2, cotizacion3, cotizacion4, cotizacion5, cotizacion6, cotizacion7, cotizacion8, cotizacion9)
+
+
     listaCotizaciones.foreach(println)
     val historialLimpio = limpiarHistorial(listaCotizaciones)
     assert(historialLimpio == 3870)
