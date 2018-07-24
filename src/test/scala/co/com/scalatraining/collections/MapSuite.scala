@@ -139,13 +139,13 @@ class MapSuite extends FunSuite {
     var map: Map[String, Int] = Map()
     val texto: String = "hola a todo el mundo hola hola"
 
-    println(texto.split(" ").groupBy(x => x).mapValues(x => x.size))
-    //texto.split(" ").foldLeft(Map[String, Int])())(op = (m,i) => m + (i -> (m.getOrElse(i,0)+1)))  ORGANIZAR !!
+    println(texto.split(" ").groupBy(x => x).mapValues(x => x.size))    //1era implementacion
+    texto.split(" ").foldLeft(Map[String, Int]())((m,i) => m + (i -> (m.getOrElse(i, 0) + 1)))  //2da implementacion
 
     val r: Array[String] = texto.split(" ")
     val sin: Array[String] = r.distinct
 
-    println(sin.map(x => x -> r.count(ele => ele == x)).toMap)
+    println(sin.map(x => x -> r.count(ele => ele == x)).toMap)    //3era implementacion
 
     sin.foreach(x =>
       map = map + (x -> r.count(ele => ele == x))
