@@ -14,6 +14,10 @@ class StackSuite extends FunSuite {
     val stack = Stack[Int](1, 2, 3, 4)
     val res: Stack[Int] = stack.push(5,6,7)
     assert(res == Stack(7, 6, 5, 1, 2, 3, 4))
+    val res2: Stack[Int] = res.push(8)
+    assert(res2 == Stack(8, 7, 6, 5, 1, 2, 3, 4))
+    val res3: Stack[Int] = res2.pushAll(List(9, 10, 11))
+    assert(res3 == Stack(11, 10, 9, 8, 7, 6, 5, 1, 2, 3, 4))
   }
 
   test("Pop elements from stack (pop/pop2)"){
@@ -40,7 +44,19 @@ class StackSuite extends FunSuite {
     assert(res == Stack(7, 6, 5, 1, 2, 3, 4, 8, 9, 10))
   }
 
-  //Stacks al ser secuencias se comportan como igual que listas, por tanto, se pueden aplicar métodos como fold, map, etc..
+  test("head of empty stack") {
+    val stack2 = Stack()
+    assertThrows[NoSuchElementException] {
+      println(stack2.head)
+    }
+  }
+
+  test("Reversing a stack") {
+    val stack = Stack(11, 10, 9, 8, 7, 6, 5, 1, 2, 3, 4)
+    assert(stack.reverse == Stack(4, 3, 2, 1, 5, 6, 7, 8, 9, 10, 11))
+  }
+
+  //Stacks al ser secuencias se comportan igual que listas, por tanto, se pueden aplicar métodos como fold, map, etc..
 
 
 }

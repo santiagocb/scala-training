@@ -60,5 +60,5 @@ class QueueSuite extends FunSuite {
     assert(emptyQueue.lastOption == None)
   }
 
-  //Queues al ser secuencias se comportan como igual que listas, por tanto, se pueden aplicar métodos como fold, map, etc..
+  //Queues al ser secuencias se comportan igual que listas, por tanto, se pueden aplicar métodos como fold, map, etc..
 }
