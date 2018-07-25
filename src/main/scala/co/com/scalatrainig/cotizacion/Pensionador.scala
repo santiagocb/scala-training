@@ -4,7 +4,7 @@ class Pensionador {
   def limpiarHistoriaLaboral(listaCotizaciones: List[Cotizacion]):Map[String, Int] = {
     listaCotizaciones
       .filter(x => x.diasCotizados != 0 && x.ibc != 0)
-      .map(x => Cotizacion(x.periodo, x.aportante, x.diasCotizados, x.ibc * 30 / 15))
+      .map(x => Cotizacion(x.periodo, x.aportante, x.diasCotizados, x.ibc * 30 / x.diasCotizados))
       .distinct
       .groupBy(x => (x.periodo, x.aportante))
       .map(x => x._1 -> x._2.foldLeft(0) { (acu, conti) =>

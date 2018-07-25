@@ -17,6 +17,6 @@ class cotizacion extends FunSuite {
     val listaCotizaciones = List(c1, c2, c3, c4, c5, c6, c7, c8)
 
     val pensionador: Pensionador = new Pensionador
-    assert(pensionador.limpiarHistoriaLaboral(listaCotizaciones) == Map("2018/08" -> 4000, "2018/07" -> 2000, "2018/10" -> 12000, "2018/09" -> 4000))
+    assert(pensionador.limpiarHistoriaLaboral(listaCotizaciones) == Map("2018/08" -> 2000, "2018/07" -> 3000, "2018/10" -> 12000, "2018/09" -> 6000))
   }
 }
