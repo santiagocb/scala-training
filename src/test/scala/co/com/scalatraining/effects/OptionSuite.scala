@@ -308,7 +308,7 @@ class OptionSuite extends FunSuite {
     assert(res.flatMap(x => Option(x + x)) == Option(2))
   }
 
-  test("Flatten con option") {
+  test("Flatten con option") {      //Flatten debe tener wrapper de tipo y subtipo
     val res = Some(Some(1))
     assert(res.flatten == Some(1))
   }
