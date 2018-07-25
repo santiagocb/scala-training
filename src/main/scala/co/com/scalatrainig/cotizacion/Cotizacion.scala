@@ -1,5 +1,3 @@
 package co.com.scalatrainig.cotizacion
 
-class Cotizacion {
-
-}
+case class Cotizacion (periodo: String, aportante: String, diasCotizados: Int, ibc: Int)
