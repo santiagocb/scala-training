@@ -22,20 +22,23 @@ class TrySuite extends FunSuite with Matchers {
   def s = Try{computar}
 
   test("Tratando el Try como un bloque try-catch"){
-    val res = Try{
+    val res = Try{        //como no usar un Try
       1
       2
       3
       2/0
       4
     }
-
+    println(res)
     assert(res.isFailure)
   }
   test("Se debe poder hacer pattern match sobre un Try que es Failure"){
     f match {
       case Success(valor) => assert(false)
-      case Failure(e) => assert(true)
+      case Failure(e) => {
+        println(s"La excepcion generada por pattern match es ${e.getMessage()}")
+        assert(true)
+      }
     }
   }
 
@@ -54,6 +57,8 @@ class TrySuite extends FunSuite with Matchers {
   test("Un Success se debe poder map [assert con for-comp]"){
     val res = s.map(x=>"HOLA")
     assert(res.isSuccess)
+    assert(s == Success(1))
+    assert(res == Success("HOLA"))
 
     for{
       ss <- res
@@ -85,6 +90,20 @@ class TrySuite extends FunSuite with Matchers {
     assert(res == Success("HOLA ME HE RECUPERADO"))
     res.flatMap(s => Try(assert(s == "HOLA ME HE RECUPERADO")) )
 
+  }
+
+  test("Error en la recuperación") {
+    val rec = f.recover{
+      case e:Exception => throw new Exception("Error propio")
+    }
+    assert(rec.isFailure)
+  }
+
+  test("Error en la recuperación con Sucess(Failure)") {
+    val rec = f.recover{
+      case e:Exception => Try(throw new Exception("Error propio"))
+    }
+    assert(rec.isSuccess)
   }
 
   test("Un Failure se debe poder recuperar con recoverWith"){
@@ -149,8 +168,32 @@ class TrySuite extends FunSuite with Matchers {
     } yield x + y + z
 
     assert(res.isFailure)
-
   }
+
+  test("Try for-com. A chain of Tries with a Failure is a Failure 2 "){
+
+    val res = for{
+      x <- s
+      y <- f.recoverWith{case e: Exception => Success(6)}
+      z <- s
+    } yield x + y + z
+
+    println(s"recover a value in a sum with for-yield, rec= ${res}")
+    assert(res.isSuccess)
+  }
+
+  test("Try for-com. A chain of Tries with a Failure is a Failure 3 "){
+
+    val res = for{
+      x <- s
+      y <- f
+      z <- s
+    } yield x + y + z
+
+    println(s"recover a value in a sum with for-yield, rec= ${res.recoverWith{case e: Exception => Success(6)}}")
+    assert(res.isFailure)
+  }
+
 
 
   /*

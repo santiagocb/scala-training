@@ -58,6 +58,7 @@ class EitherSuite extends FunSuite{
   test("Swap un Either"){
     val res: Either[String, Int] = foo(2)
     val res2: Either[Int, String] = res.swap
+    println(res2)
     assert(res2.isLeft)
 
   }
