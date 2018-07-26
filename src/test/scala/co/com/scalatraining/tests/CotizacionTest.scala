@@ -3,7 +3,7 @@ package co.com.scalatraining.tests
 import co.com.scalatrainig.cotizacion.{Cotizacion, Pensionador}
 import org.scalatest.FunSuite
 
-class cotizacion extends FunSuite {
+class CotizacionTest extends FunSuite {
 
   test ("Limpiar Historial"){
     val c1: Cotizacion = new Cotizacion("2018/07", "S4N", 10, 1000)
