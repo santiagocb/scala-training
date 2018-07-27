@@ -30,6 +30,7 @@ class FutureSuite extends FunSuite {
       "Hola"
     }
     val resultado: String = Await.result(saludo, 10 seconds)      //NUNCA USAR
+    println(saludo)
     assert(resultado == "Hola")
     assert(hiloPpal != hiloFuture)
   }
@@ -61,6 +62,7 @@ class FutureSuite extends FunSuite {
 
       mensaje + " muchachos"
     })
+    println(s"mapfuture ${saludoCompleto}")
     val resultado = Await.result(saludoCompleto, 10 seconds)
     assert(resultado == "Hola muchachos")
   }
