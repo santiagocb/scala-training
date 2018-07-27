@@ -61,11 +61,43 @@ class FutureSuite extends FunSuite {
 
       mensaje + " muchachos"
     })
-
-
     val resultado = Await.result(saludoCompleto, 10 seconds)
     assert(resultado == "Hola muchachos")
   }
+
+  //----------------------------
+
+
+  test("map en Future 2") {
+
+
+    val t1 = Thread.currentThread().getName
+    println(s"Test 2 - El hilo del ppal es ${t1}")
+
+    val saludo = Future {
+      val t2 = Thread.currentThread().getName
+      println(s"Test 2 - El hilo del future es ${t2}")
+
+      Thread.sleep(500)
+      "Hola"
+    }
+    Thread.sleep(5000)
+
+    val saludo2 = Future{
+      println(s"Test 2 - Hilo normal ${Thread.currentThread().getName}")
+    }
+    val saludoCompleto = saludo.map(mensaje => {
+      val t3 = Thread.currentThread().getName
+      println(s"Test 2 - El hilo del map es ${t3}")
+
+      mensaje + " muchachos"
+    })
+    val resultado = Await.result(saludoCompleto, 10 seconds)
+    assert(resultado == "Hola muchachos")
+  }
+
+
+
 
   test("Se debe poder encadenar Future con for-comp") {
     val f1 = Future {
@@ -119,8 +151,6 @@ class FutureSuite extends FunSuite {
     val r: Unit = divisionCero.onFailure {
       case e: Exception => error = true
     }
-
-
 
     Thread.sleep(1000)
 

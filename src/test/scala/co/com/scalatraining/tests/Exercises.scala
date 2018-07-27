@@ -1,8 +1,15 @@
 package co.com.scalatraining.tests
 
+import java.util.concurrent.Executors
+
 import org.scalatest.FunSuite
 
 import scala.collection.immutable.Queue
+import scala.language.postfixOps
+import scala.util.{Failure, Success}
+import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class Exercises extends FunSuite{
 
@@ -33,7 +40,50 @@ class Exercises extends FunSuite{
   test("Multiplicando listas que tienen None") {
     val lista1 = List(2, 3, Nil, 5)
     val lista2 = List(6, Nil, 8, 0)
-    val multiply = lista1.zip(lista2).flatMap(x => List(x._1*x._2))
-    println(multiply)
+    //val multiply = lista1.zip(lista2).flatMap(x => List(x._1*x._2))
+    //println(multiply)
   }
+
+  test("Obteniendo temperatura") {
+    def getTemperature(): Double = {
+      Thread.sleep(300)
+      30 / 0
+    }
+    def toKelvin(grades: Double): Double = {
+      Thread.sleep(300)
+      grades + 273.15
+    }
+
+    val temperature = Future { getTemperature() }
+      .flatMap(x => Future{
+          toKelvin(x)
+        }.recover{case e: Exception => toKelvin(30.0)}
+      )
+      .recover{case e: Exception => 30.0}
+        .flatMap(x => Future{
+          toKelvin(x)
+        }.recover{case e: Exception => toKelvin(30.0)})
+    temperature.foreach(println)
+  }
+
+  test("Hilos Clima") {           //IMPLEMENTAR BIEN CON CLASES Y PRUEBA
+    val contextWeather = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(5))
+    val contextSave = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(1))
+
+    def getWeather(): Future[Int] = Future{
+      Thread.sleep(50)
+      println(s"El servicio de Clima arroja 10 con hilo: ${Thread.currentThread().getName}")
+      10
+    } (contextWeather)
+
+    def saveDB(weather: Int): Future[String] = Future {
+      Thread.sleep(300)
+      println(s"Estoy guardanding en la DB con hilo: ${Thread.currentThread().getName}")
+      s"Estoy guardando en la DB + ${weather}"
+    } (contextSave)
+
+    Future.sequence{ Range(1,10).map(x => getWeather().flatMap(y => saveDB(y))) }
+
+  }
+
 }
