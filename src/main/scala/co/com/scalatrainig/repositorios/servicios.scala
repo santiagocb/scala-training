@@ -5,13 +5,9 @@ import java.util.concurrent.Executors
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object serviciosGitLab {
+/*object serviciosGitLab {
 
-  val allRepos = List(
-    Repositorio("santiagocb", "myapp", 20, "java"),
-    Repositorio("santiagocb", "scala-training", 1000, "scala"),
-    Repositorio("santiagocb", "backend-sura", 10200, "scala")
-  )
+
 
   val users = List("santiagocb")
 
@@ -40,4 +36,4 @@ object serviciosGitLab {
 
   }
 
-}
+}*/
