@@ -2,8 +2,6 @@ package co.com.scalatraining.collections
 
 import org.scalatest.FunSuite
 
-import scala.collection.immutable.Seq
-
 /**
   * Hasta Scala 2.12 la taxonomía de colecciones es la siguiente:
   *
@@ -285,5 +283,11 @@ class ListSuite extends FunSuite {
     assertResult(List(1, 2, 3, 4)) {
       lista3.flatMap(x => x)
     }
+  }
+
+  test("asdsd") {
+    val lista1 = List(2,3,1,4,1).scanLeft(0)((acu, item) =>
+      acu + item)
+    println(lista1)
   }
 }
