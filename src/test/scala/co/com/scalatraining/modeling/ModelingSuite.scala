@@ -19,9 +19,9 @@ class ModelingSuite extends FunSuite {
   object Instruccion {
     def newInstruccion(c:Char):Instruccion ={
       c match {
-        case "A" => A()
-        case "D" => D()
-        case "I" => I()
+        case 'A' => A()
+        case 'D' => D()
+        case 'I' => I()
         case _ => throw new Exception(s"Caracter invalido para creacion de instruccion: $c")
       }
     }
@@ -35,10 +35,10 @@ class ModelingSuite extends FunSuite {
 
     import Instruccion._
 
-    val instruccionA = Try(newInstruccion("A"))
-    val instruccionD = Try(newInstruccion("D"))
-    val instruccionI = Try(newInstruccion("I"))
-    val instruccionInvalida = Try(newInstruccion("."))
+    val instruccionA = Try(newInstruccion('A'))
+    val instruccionD = Try(newInstruccion('D'))
+    val instruccionI = Try(newInstruccion('I'))
+    val instruccionInvalida = Try(newInstruccion('.'))
 
     assert(instruccionA == Success(A()))
     assert(instruccionD == Success(D()))
