@@ -116,4 +116,37 @@ class TrainingSuite extends FunSuite{
     }
     assert(res == "one")
   }
+
+  test("Compose: funciones") {
+    def f(s: String) = "f(" + s + ")"
+    def g(s: String) = "g(" + s + ")"
+
+    val fComposeG = f _ compose g _
+    assert(fComposeG("yay") == f(g("yay")))
+  }
+
+  test("andThen -> reverse compose: funciones") {
+    def f(s: String) = "f(" + s + ")"
+    def g(s: String) = "g(" + s + ")"
+
+    val fAndThenG = f _ andThen  g _
+    val fAndThenGAndThenf = f _ andThen g _ andThen f _   //componer más de 2 funciones
+    assert(fAndThenG("yay") == g(f("yay")))
+  }
+
+  test("partialFunction: funciones con dominio limitado") {
+    val one: PartialFunction[Int, String] = { case 1 => "one" }
+    assert(one.isDefinedAt(1))
+    assert(!one.isDefinedAt(2))
+  }
+
+test("Componiendo un partialFunction") {          //A PartialFunction is a subtype of Function so filter can also take a PartialFunction!
+    val one: PartialFunction[Int, String] = { case 1 => "one" }
+    val two: PartialFunction[Int, String] = { case 2 => "two" }
+    val three: PartialFunction[Int, String] = { case 3 => "three" }
+    val wildcard: PartialFunction[Int, String] = { case _ => "something else" }
+    val partial = one orElse two orElse three orElse wildcard
+    assert(partial(1) == "one")
+    assert(partial.isDefinedAt(9))
+  }
 }
