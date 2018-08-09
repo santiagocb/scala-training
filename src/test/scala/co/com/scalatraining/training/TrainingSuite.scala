@@ -140,7 +140,7 @@ class TrainingSuite extends FunSuite{
     assert(!one.isDefinedAt(2))
   }
 
-test("Componiendo un partialFunction") {          //A PartialFunction is a subtype of Function so filter can also take a PartialFunction!
+  test("Componiendo un partialFunction") {          //A PartialFunction is a subtype of Function so filter can also take a PartialFunction!
     val one: PartialFunction[Int, String] = { case 1 => "one" }
     val two: PartialFunction[Int, String] = { case 2 => "two" }
     val three: PartialFunction[Int, String] = { case 3 => "three" }
@@ -148,5 +148,75 @@ test("Componiendo un partialFunction") {          //A PartialFunction is a subty
     val partial = one orElse two orElse three orElse wildcard
     assert(partial(1) == "one")
     assert(partial.isDefinedAt(9))
+  }
+
+  test("Una función puede retornar cualquier tipo, scala compiler lo infiere") {
+    def hola[T](i: T) = i
+    assert(hola(3) == 3)
+    assert(hola("hola") == "hola")
+
+    def hola2[A](i: A) = i
+    assert(hola2(3) == 3)
+    assert(hola2("hola") == "hola")
+  }
+
+  test("Variance en clases") {
+    class Covarianza[+A]
+    val a:Covarianza[AnyRef] = new Covarianza[String]
+
+    class Contravarianza[-A]
+    val b:Contravarianza[String] = new Contravarianza[AnyRef]
+  }
+
+  test("Types in scala") {
+    class Animal { val sound = "rustle" }
+    class Bird extends Animal {
+      override val sound: String = "call"}
+    class Chicken extends Bird {
+      override val sound: String = "cluck"}
+
+    val getTweet: Bird => String = (bird: Bird) => bird.sound
+
+    val getTweet2: Bird => String = (animal: Animal) => animal.sound
+    assert(getTweet(new Bird) == getTweet2(new Bird))
+  }
+
+  test("Bounds --> evitar hacer esto") {
+    class Animal { val sound = "rustle" }
+    class Bird extends Animal {
+      override val sound: String = "call"}
+    class Chicken extends Bird {
+      override val sound: String = "cluck"}
+
+    //def cacophony[T](things: Seq[T]) = things.map(_.sound)    No se limita el T
+    def cacophony[T <: Animal](things: Seq[T]) = things.map(_.sound) //Se limita a que el T es de tipo Animal
+    def cacophony2(things: Seq[Animal]) = things.map(_.sound)
+    assert(cacophony(List(new Bird, new Chicken)) == cacophony2(List(new Bird, new Chicken)))
+    //¿cuál vendría siendo la diferencia entre ambas formas de definir un método
+  }
+
+  test("Debería no ensuciar la clase que hereda de un rasgo") {   //types members
+    sealed trait Animal
+    case class Perro(nombre: String, sonido: String) extends Animal
+    case class Gato(nombre: String, sonido: String) extends Animal
+
+    sealed trait GenericBehavior[T] {
+      def emitirSonido(animal: T): T
+    }
+
+    object PerroBehavior extends GenericBehavior[Perro]{
+      override def emitirSonido(animal: Perro) = {
+        Perro(animal.nombre, "wow")
+      }
+    }
+
+    object GatoBehavior extends GenericBehavior[Gato]{
+      override def emitirSonido(animal: Gato) = {
+        Gato(animal.nombre, "miau")
+      }
+    }
+
+    assert(PerroBehavior.emitirSonido(Perro("Kaiser", "")) == Perro("Kaiser", "wow"))
+    assert(GatoBehavior.emitirSonido(Gato("Kato", "")) == Gato("Kato", "miau"))
   }
 }
