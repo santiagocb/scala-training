@@ -85,4 +85,35 @@ class TrainingSuite extends FunSuite{
     val circulo1 = new Circulo(2)
     assert(circulo1.getArea() == 12)
   }
+
+  test("Redefiniendo el apply") {
+    class A {
+      def apply() = 0
+    }
+    val a = new A()
+    assert(a() == 0)
+  }
+
+  test("Trait Function 0-22") {
+    object addOne extends Function1[Int, Int] {
+      def apply(m: Int): Int = m + 1
+    }
+
+    object sum extends Function2[Int, Int, String] {
+      def apply(m: Int, n: Int): String = "hola"
+    }
+
+    assert(addOne(1) == 2)
+    assert(sum(2, 1) == "hola")
+  }
+
+  test("Pattern matching con guards") {
+    val times = 1
+    val res = times match {
+      case i if i == 1 => "one"
+      case i if i == 2 => "two"
+      case _ => "some other number"
+    }
+    assert(res == "one")
+  }
 }
