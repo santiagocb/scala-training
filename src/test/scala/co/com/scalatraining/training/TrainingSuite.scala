@@ -150,6 +150,42 @@ class TrainingSuite extends FunSuite{
     assert(partial.isDefinedAt(9))
   }
 
+  test("Componiendo un partialFunction2: funciones que limitan el dominio con sus métodos") {
+    val doubleEvens: PartialFunction[Int, Int] =
+      new PartialFunction[Int, Int] {
+        //States that this partial function will take on the task
+        def isDefinedAt(x: Int) = x % 2 == 0
+
+        //What we do if this partial function matches
+        def apply(v1: Int) = v1 * 2
+      }
+
+    val tripleOdds: PartialFunction[Int, Int] = new PartialFunction[Int, Int] {
+      def isDefinedAt(x: Int) = x % 2 != 0
+
+      def apply(v1: Int) = v1 * 3
+    }
+
+    val whatToDo = doubleEvens orElse tripleOdds
+    val number = whatToDo(3)
+    assert(number == 9)
+    assert(whatToDo(2) == 4)
+  }
+
+  test("Componiendo un partialFunction3: funciones que limitan el dominio con sus métodos") {
+    val doubleEvens: PartialFunction[Int, Int] = {
+      case x if (x % 2) == 0 => x * 2
+    }
+    val tripleOdds: PartialFunction[Int, Int] = {
+      case x if (x % 2) != 0 ⇒ x * 3
+    }
+
+    val whatToDo = doubleEvens orElse tripleOdds
+    val number = whatToDo(3)
+    assert(number == 9)
+    assert(whatToDo(2) == 4)
+  }
+
   test("Una función puede retornar cualquier tipo, scala compiler lo infiere") {
     def hola[T](i: T) = i
     assert(hola(3) == 3)
@@ -219,4 +255,84 @@ class TrainingSuite extends FunSuite{
     assert(PerroBehavior.emitirSonido(Perro("Kaiser", "")) == Perro("Kaiser", "wow"))
     assert(GatoBehavior.emitirSonido(Gato("Kato", "")) == Gato("Kato", "miau"))
   }
+
+  test("Referencias de objetos singleton") {
+    object Greeting {
+      def english = "Hi"
+
+      def espanol = "Hola"
+    }
+    val x = Greeting
+    val y = x
+    val z = Greeting
+    assert(x == y)
+    assert(x == z)
+  }
+
+  test("Retornando una función(HOF)") {        //val funciones son objetos funcionales  (res)
+    def addWithoutSyntaxSugar(x: Int): Function1[Int, Int] = {
+      new Function1[Int, Int]() {
+        def apply(y: Int): Int = x + y
+        def sum(x: Int): Int = x
+      }
+    }
+    assert(addWithoutSyntaxSugar(1).isInstanceOf[Function1[Int, Int]])
+    assert(addWithoutSyntaxSugar(1).apply(2) == 3)
+  }
+
+  test("Función retornando otra función ańonima") {
+    def add(x: Int): Int => Int = (y: Int) => x  + y
+    assert(add(1)(2) == 3)
+    assert((add _).isInstanceOf[Function1[_, _]])
+  }
+
+  test("Range to/until/by") {       //Range 0-based
+    val range = Range(0, 10, 2).inclusive
+    val last = range.last
+    val first = range.apply(2)
+    assert(last == 10)
+    assert(first == 4)
+  }
+
+  test("Implicits") {     //tipo de funciones/valores que están en el ambiente
+    object MyPredef {
+      class KoanIntWrapper(val original: Int) {
+        def isOdd = original % 2 != 0
+        def isEven = !isOdd
+      }
+
+      implicit def thisMethodNameIsIrrelevant(value: Int) =
+        new KoanIntWrapper(value)
+    }
+    import MyPredef._       //debe importarse el contenido donde se define el implicito si se desea usar
+    assert(19.isOdd)
+    assert(20.isEven)
+  }
+
+  test("Implicits 2") {
+    implicit def intToStr(i: Int) = i.toString
+    val r: String = 9
+    assert(r == "9")
+  }
+
+  test("Implicits 3") {
+    def howMuchCanIMake(hours: Int)(implicit dollarsPerHour: BigDecimal) =
+      dollarsPerHour * hours
+    implicit val hourlyRate = BigDecimal(34)
+    assert(howMuchCanIMake(30) == 1020)
+  }
+
+  test("Sobre traversables") {
+    val list = List(4, 6, 7, 8, 9, 13, 14)
+    val result = list.collect {
+      case x: Int if (x % 2 == 0) ⇒ x * 3
+    }
+    assert(result == List(12, 18, 24, 42))
+
+    val array = Array(87, 44, 5, 4, 200, 10, 39, 100)
+    val result2 = array splitAt 3
+    assert(result2._1.toList == List(87, 44, 5))
+    assert(array.span(_ < 90)._1.toList == List(87, 44, 5, 4))
+  }
+
 }
