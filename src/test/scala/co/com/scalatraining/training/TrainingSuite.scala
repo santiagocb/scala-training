@@ -256,21 +256,21 @@ class TrainingSuite extends FunSuite{
   }
 
   test("Debería no ensuciar la clase que hereda de un rasgo") {   //types members
-    sealed trait Animal
-    case class Perro(nombre: String, sonido: String) extends Animal
-    case class Gato(nombre: String, sonido: String) extends Animal
 
-    sealed trait GenericBehavior[T] {
+    case class Perro(nombre: String, sonido: String)
+    case class Gato(nombre: String, sonido: String)
+
+    sealed trait GenericAnimalBehavior[T] {
       def emitirSonido(animal: T): T
     }
 
-    object PerroBehavior extends GenericBehavior[Perro]{
+    object PerroBehavior extends GenericAnimalBehavior[Perro]{
       override def emitirSonido(animal: Perro) = {
         Perro(animal.nombre, "wow")
       }
     }
 
-    object GatoBehavior extends GenericBehavior[Gato]{
+    object GatoBehavior extends GenericAnimalBehavior[Gato]{
       override def emitirSonido(animal: Gato) = {
         Gato(animal.nombre, "miau")
       }
@@ -279,7 +279,7 @@ class TrainingSuite extends FunSuite{
     assert(PerroBehavior.emitirSonido(Perro("Kaiser", "")) == Perro("Kaiser", "wow"))
     assert(GatoBehavior.emitirSonido(Gato("Kato", "")) == Gato("Kato", "miau"))
   }
-
+  
   test("Referencias de objetos singleton") {
     object Greeting {
       def english = "Hi"
