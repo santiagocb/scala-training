@@ -2,7 +2,7 @@ package co.com.scalatraining.training
 
 import org.scalatest.FunSuite
 
-class TypeClassSuite extends FunSuite {
+class StatisticsTCSuite extends FunSuite {
 
   //Type classes
   object Math {
