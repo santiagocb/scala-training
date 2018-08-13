@@ -204,6 +204,30 @@ class TrainingSuite extends FunSuite{
     val b:Contravarianza[String] = new Contravarianza[AnyRef]
   }
 
+  test("Variance en clases 2") {
+    class Fruit
+    class Orange extends Fruit
+
+    class MyContainer[+A](val a: A)(implicit manifest: scala.reflect.Manifest[A]) {
+      def contents = manifest.runtimeClass.getSimpleName
+    }
+
+    /*class MyContainer2[-A](val a: A)(implicit manifest: scala.reflect.Manifest[A]) {
+      def contents = manifest.runtimeClass.getSimpleName
+    }*/
+
+    class MyContainer3[A](val a: A)(implicit manifest: scala.reflect.Manifest[A]) {
+      def contents = manifest.runtimeClass.getSimpleName
+    }
+
+    // Uncomment the following line
+    val fruitBasket: MyContainer[Orange] = new MyContainer[Orange](new Orange)
+    val fruitBasket2: MyContainer[Fruit] = new MyContainer[Orange](new Orange)
+    //val fruitBasket3: MyContainer2[Orange] = new MyContainer2[Fruit](new Orange)
+    val fruitBasket4: MyContainer3[Fruit] = new MyContainer3[Fruit](new Orange)
+    //val fruitBasket2: MyContainer2[Orange] = new MyContainer2[Fruit](new Orange())
+  }
+
   test("Types in scala") {
     class Animal { val sound = "rustle" }
     class Bird extends Animal {
@@ -267,6 +291,12 @@ class TrainingSuite extends FunSuite{
     val z = Greeting
     assert(x == y)
     assert(x == z)
+  }
+
+  test("HOF") {
+    def foo(a: Int, f:(Int) => String):String = f(a)
+    assert(foo(2, _.toString) == "2")
+    assert(foo(2, a => s"hola mundo ${a}") == s"hola mundo ${2}")
   }
 
   test("Retornando una función(HOF)") {        //val funciones son objetos funcionales  (res)
@@ -335,4 +365,77 @@ class TrainingSuite extends FunSuite{
     assert(array.span(_ < 90)._1.toList == List(87, 44, 5, 4))
   }
 
+  test("Default args") {
+    def reduce(a: Int, f: (Int, Int) ⇒ Int = _ + _): Int = f(a, a)
+    assert(reduce(5) == 10)
+    assert(reduce(5, (a, b) => a * b) == 25)
+    assert(reduce(5, _ * _) == 25)
+  }
+
+  test("Extractors / unapply") {
+    object Twice {
+      def apply(x: Int): Int = x * 2
+      def unapply(z: Int): Option[Int] = if (z % 2 == 0) Some(z / 2) else None
+    }
+
+    val res = Twice(5)
+    val res2 = res match {
+      case Twice(i) => assert(i == 5)
+    }
+  }
+
+  test("Parámetros repetidos") {
+    def repeatedParameterMethod(x: Int, y: String, z: Any*) = {
+      "%d %ss can give you %s".format(x, y, z.mkString(", "))
+    }
+    assert(repeatedParameterMethod(3, "eggs", "a delicious sandwich", "protein", "high cholesterol")
+    == "3 eggss can give you a delicious sandwich, protein, high cholesterol")
+    assert(repeatedParameterMethod(3, "eggs", List("a delicious sandwich", "protein", "high cholesterol"): _*)
+      == "3 eggss can give you a delicious sandwich, protein, high cholesterol")
+  }
+
+  test("Clases padre") {
+    class Soldier(val firstName: String, val lastName: String) {}
+    class Pilot(override val firstName: String, override val lastName: String, val squadron: Long)
+      extends Soldier(firstName, lastName)
+
+    val pilot = new Pilot("John", "Yossarian", 256)
+    val soldier: Soldier = pilot
+
+    assert(soldier.firstName == "John")
+    assert(soldier.lastName == "Yossarian")
+  }
+
+  test("Enumerations") {
+    object Planets extends Enumeration {
+      val Mercury = Value
+      val Venus = Value
+      val Earth = Value
+      val Mars = Value
+      val Jupiter = Value
+      val Saturn = Value
+      val Uranus = Value
+      val Neptune = Value
+      val Pluto = Value
+    }
+    assert(Planets.Mercury.id == 0)
+    println(Planets.Neptune == Planets.Neptune)
+  }
+
+  test("Enumerations 2") {
+    object GreekPlanets extends Enumeration {
+      val Mercury = Value(1, "Hermes")
+      val Venus = Value(2, "Aphrodite")
+      //Fun Fact: Tellus is Roman for (Mother) Earth
+      val Earth = Value(3, "Gaia")
+      val Mars = Value(4, "Ares")
+      val Jupiter = Value(5, "Zeus")
+      val Saturn = Value(6, "Cronus")
+      val Uranus = Value(7, "Ouranus")
+      val Neptune = Value(8, "Poseidon")
+      val Pluto = Value(9, "Hades")
+    }
+
+    println(GreekPlanets.Mercury.id)
+  }
 }
